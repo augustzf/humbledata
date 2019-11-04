@@ -1,4 +1,4 @@
-import { Row, Frame } from "./frame"
+import { Frame, Row } from './frame'
 
 export class Builder {
     // tslint:disable-next-line: variable-name

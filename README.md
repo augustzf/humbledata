@@ -1,19 +1,19 @@
-<h1 align="center">Humble Data – a data wrangler for humble-sized data sets</h1>
+<h1 align='center'>Humble Data – a data wrangler for humble-sized data sets</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
-  <a href="#" target="_blank">
-    <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellof.svg" />
+  <img alt='Version' src='https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000' />
+  <a href='#' target='_blank'>
+    <img alt='License: ISC' src='https://img.shields.io/badge/License-ISC-yellof.svg' />
   </a>
 </p>
 
 
 ## Goal
 
-Humble Data strives to be a no-dependency, in-memory data wrangler with a small and intuitive API. It's useful if you have a small to medium (thousands or tens of thousands) records returned from a database, and you'd like to massage and wrangle and hustle with the data without having to perform additional database queries. 
+Humble Data strives to be an in-memory data wrangler with a small and intuitive API. It's useful if you have a small to medium (thousands or tens of thousands) records returned from a database, and you'd like to massage and wrangle and hustle with the data in memory. 
 
 ## Concepts
 
-You use Humble Data to build a `Frame` object from any data source of tidy data; typically from a result set returned from a database query. The `Frame` object can then be manipulated and queried further using aggregate, selection, sorting, and filtering operations. Aggregate functions return one value. All other operations return a new `Frame` object. This allows operations to be chained.
+You use Humble Data to build a `Frame` object from any data source of tidy data; typically from a CSV file or a database query result. The `Frame` object can then be manipulated and queried further using aggregate, selection, sorting, and filtering operations. Aggregate functions return one value. All other operations return a new `Frame` object. This allows operations to be chained.
 
 > Humble Data works best with _tidy_ data sets. Tidy data is data that is arranged such that each row represents one sample, and each column represents one variable. In Humble Data, we call a column a `field`. 
 
@@ -27,35 +27,37 @@ The `Frame` object, once built, is immutable. You build a `Frame` object with a 
 ```typescript
 // build by adding one object at a time
 const frame = new Builder()
-  .addRow({ name: "foo", size: 10 })
-  .addRow({ name: "bar", size: 30 })
+  .addRow({ name: 'foo', size: 10 })
+  .addRow({ name: 'bar', size: 30 })
   .build()  
 
-// or build from a given array of objects
+// ...or build from a given array of objects
 const data = [
-    { name: "alice", age: 20, height: 170 },
-    { name: "bob", age: 30, height: 180 },
-    { name: "charlie", age: 40, height: 175 }    
+    { name: 'alice', age: 20, height: 170 },
+    { name: 'bob', age: 30, height: 180 },
+    { name: 'charlie', age: 40, height: 175 }    
 ]
+const frame = new Builder(data).build()
 
-const w = new Builder(data).build()
+// ...or build from a CSV file
+const frame = await new AsyncBuilder().csv('data.csv', 'utf-8', ',')
 ```
 
 ### Aggregate functions
 Aggregate functions return a single value calculated from applying an aggregate function to all rows that have a value for the given field.
 
 ```typescript
-const sum = f.sum("age") // sum = 90
-const max = f.max("height") // max = 180
-const avg = f.avg("age") // avg = 30
-const median = f.median("height") // median = 175
+const sum = f.sum('age') // sum = 90
+const max = f.max('height') // max = 180
+const avg = f.avg('age') // avg = 30
+const median = f.median('height') // median = 175
 ```
 
 ### Filtering
 The `where` function is used to filter out rows based on a condition. The `where` function returns a new `Frame` object. 
 
 ```typescript
-f.where("age", ">=", 30).print()
+f.where('age', '>=', 30).print()
 
 ```
 
@@ -64,17 +66,17 @@ The `group` function combines grouping and aggregation. It groups data by given 
 
 ```typescript
 const gameData = [
-    { player: "eva", points: 80 },
-    { player: "eva", points: 10 },
-    { player: "eva", points: 50 },
-    { player: "bob", points: 90 },
-    { player: "joe", points: 20 },
+    { player: 'eva', points: 80 },
+    { player: 'eva', points: 10 },
+    { player: 'eva', points: 50 },
+    { player: 'bob', points: 90 },
+    { player: 'joe', points: 20 },
 ] 
 new Builder(gameData)
             .build()
-            .print("Player stats")
-            .group("player", "sum", "points")
-            .print("Total points per player")
+            .print('Player stats')
+            .group('player', 'sum', 'points')
+            .print('Total points per player')
      
 Player stats
 ┌─────────┬────────┬────────┐
@@ -112,7 +114,7 @@ const f = new Builder().addRows(peopleData).build().print()
 │    4    │ 'august'  │ 48  │ 'm' │  180   │
 └─────────┴───────────┴─────┴─────┴────────┘
 
-const res = f.split("sex")
+const res = f.split('sex')
 res.map(r => r.print())
 ┌─────────┬─────────┬─────┬─────┬────────┐
 │ (index) │  name   │ age │ sex │ height │

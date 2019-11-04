@@ -1,12 +1,12 @@
-import { Builder } from "./builder"
+import { Builder } from './builder'
 
 /**
  * Aggregate functions
  */
 
-export type AggregateFn = "sum" | "max" | "min" | "avg" | "median" | "count" | "distinct"
-export type Operation = "<" | "<=" | "==" | "!=" | ">=" | ">"
-export type SortOrder = "asc" | "desc"
+export type AggregateFn = 'sum' | 'max' | 'min' | 'avg' | 'median' | 'count' | 'distinct'
+export type Operation = '<' | '<=' | '==' | '!=' | '>=' | '>'
+export type SortOrder = 'asc' | 'desc'
 export type Row = { [key: string]: any }
 
 export class Frame {
@@ -92,9 +92,9 @@ export class Frame {
     }
 
     // sort, and leave out rows with no matching field
-    public sort(field: string, order: SortOrder = "asc") {
+    public sort(field: string, order: SortOrder = 'asc') {
         const w = this.select(field)
-        const direction = order === "asc" ? -1 : 1
+        const direction = order === 'asc' ? -1 : 1
         const sorted = w.data.sort((a: any, b: any) => {
             const af = a[field]
             const bf = b[field]
@@ -186,7 +186,7 @@ export class Frame {
         const vals = this.distinctValues(groupByField)
         const resultField = `${fn}_${aggregateByField}`
         for (const val of vals) {
-            const frame = this.where(groupByField, "==", val)
+            const frame = this.where(groupByField, '==', val)
             const res = (frame as any)[fn](aggregateByField)
             builder.addRow({ [groupByField]: val, [resultField]: res })
         }
@@ -215,7 +215,7 @@ export class Frame {
      */
     public split(field: string): Frame[] {
         const vals = this.distinctValues(field)
-        const res = vals.map(val => this.where(field, "==", val))
+        const res = vals.map(val => this.where(field, '==', val))
         return res
     }
 
@@ -258,17 +258,17 @@ export class Frame {
     // returns evaluation function given an Operation
     private _evalFn(op: Operation): (lsh: any, rhs: any) => boolean {
         switch (op) {
-            case "<":
+            case '<':
                 return (lhs: any, rhs: any) => lhs < rhs
-            case ">":
+            case '>':
                 return (lhs: any, rhs: any) => lhs > rhs
-            case "<=":
+            case '<=':
                 return (lhs: any, rhs: any) => lhs <= rhs
-            case ">=":
+            case '>=':
                 return (lhs: any, rhs: any) => lhs >= rhs
-            case "==":
+            case '==':
                 return (lhs: any, rhs: any) => lhs === rhs
-            case "!=":
+            case '!=':
                 return (lhs: any, rhs: any) => lhs !== rhs
         }
     }
@@ -277,7 +277,7 @@ export class Frame {
     private _nums(field: string, fn: (val: number) => void) {
         for (const d of this.data) {
             const val = d[field]
-            if (val && typeof val === "number") {
+            if (val && typeof val === 'number') {
                 fn(val)
             }
         }

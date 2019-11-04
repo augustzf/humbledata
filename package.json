@@ -39,5 +39,7 @@
   "files": [
     "lib/**/*"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "csv-parse": "^4.6.5"
+  }
 }
