@@ -184,3 +184,11 @@ describe("Resilience", () => {
         f.where("foo", "!=", "bar")
     })
 })
+
+describe("Splitting", () => {
+    it("should split into frames based on groups", () => {
+        const f = new Builder().addRows(peopleData).build()
+        const res = f.split("sex")
+        expect(res.length).to.equal(2)
+    })
+})

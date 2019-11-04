@@ -209,6 +209,16 @@ export class Frame {
         return builder.build()
     }
 
+    /**
+     * Returns array of new Frames; one per group.
+     * @param field Name of the field to split frame by.
+     */
+    public split(field: string): Frame[] {
+        const vals = this.distinctValues(field)
+        const res = vals.map(val => this.where(field, "==", val))
+        return res
+    }
+
     public select(field: string): Frame {
         return new Builder().addRows(this.data.filter(row => !!row[field])).build()
     }

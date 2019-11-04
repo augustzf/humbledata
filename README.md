@@ -1,4 +1,4 @@
-<h1 align="center">Humble Data – a client-side data wrangler</h1>
+<h1 align="center">Humble Data – a data wrangler for humble-sized data sets</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
@@ -97,6 +97,37 @@ Total points per player
 └─────────┴────────┴────────────┘
 ```
 
+### Splitting
+The `split` function splits one `Frame` into several, by grouping on a given field.
+
+```typescript
+const f = new Builder().addRows(peopleData).build().print()        
+┌─────────┬───────────┬─────┬─────┬────────┐
+│ (index) │   name    │ age │ sex │ height │
+├─────────┼───────────┼─────┼─────┼────────┤
+│    0    │  'alice'  │ 20  │ 'f' │  170   │
+│    1    │ 'charlie' │ 40  │ 'm' │  175   │
+│    2    │   'per'   │  2  │ 'm' │   95   │
+│    3    │  'lise'   │  3  │ 'f' │  125   │
+│    4    │ 'august'  │ 48  │ 'm' │  180   │
+└─────────┴───────────┴─────┴─────┴────────┘
+
+const res = f.split("sex")
+res.map(r => r.print())
+┌─────────┬─────────┬─────┬─────┬────────┐
+│ (index) │  name   │ age │ sex │ height │
+├─────────┼─────────┼─────┼─────┼────────┤
+│    0    │ 'alice' │ 20  │ 'f' │  170   │
+│    1    │ 'lise'  │  3  │ 'f' │  125   │
+└─────────┴─────────┴─────┴─────┴────────┘
+┌─────────┬───────────┬─────┬─────┬────────┐
+│ (index) │   name    │ age │ sex │ height │
+├─────────┼───────────┼─────┼─────┼────────┤
+│    0    │ 'charlie' │ 40  │ 'm' │  175   │
+│    1    │   'per'   │  2  │ 'm' │   95   │
+│    2    │ 'august'  │ 48  │ 'm' │  180   │
+└─────────┴───────────┴─────┴─────┴────────┘
+```
 ## Running tests
 
 `npm run test`
