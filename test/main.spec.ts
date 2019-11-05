@@ -11,12 +11,12 @@ const peopleData = [
 ]
 
 const gameData = [
-    { player: 'eva', game: 'peanut hunt', points: 80 },
-    { player: 'eva', game: 'peanut hunt', points: 10 },
-    { player: 'eva', game: 'balloon bust', points: 50 },
-    { player: 'bob', game: 'peanut hunt', points: 90 },
-    { player: 'joe', game: 'balloon bust', points: 20 },
-    { player: 'charles', game: 'peanut hunt', points: 0 },
+    { date: '2019-11-05', player: 'eva', game: 'peanut hunt', points: 80 },
+    { date: '2019-11-04', player: 'eva', game: 'peanut hunt', points: 10 },
+    { date: '2019-11-03', player: 'eva', game: 'balloon bust', points: 50 },
+    { date: '2019-11-03', player: 'bob', game: 'peanut hunt', points: 90 },
+    { date: '2019-11-04', player: 'joe', game: 'balloon bust', points: 20 },
+    { date: '2019-11-05', player: 'charles', game: 'peanut hunt', points: 0 },
 ]
 
 describe('Builder', () => {
@@ -196,5 +196,21 @@ describe('Splitting', () => {
         const f = new Builder().addRows(peopleData).build()
         const res = f.split('sex')
         expect(res.length).to.equal(2)
+    })
+})
+
+describe('Transforming', () => {
+    it('should convert field to date', () => {
+        const f = new Builder().addRows(gameData).build().date('date')
+        expect(f.head(1).value('date')).instanceOf(Date)
+    })
+    it('should convert field to number', async () => {
+        const file = path.join(__dirname, './deniro.csv')
+        const builder = new AsyncBuilder()
+        // the frame built from csv will have all fields as strings
+        const f = await builder.csv(file)
+        const transformed = f.number('score').number('year')
+        expect(typeof transformed.head(1).value('year')).to.equal('number')
+        expect(typeof transformed.head(1).value('score')).to.equal('number')
     })
 })

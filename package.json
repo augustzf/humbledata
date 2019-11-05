@@ -2,16 +2,22 @@
   "name": "humbledata",
   "version": "1.0.1",
   "description": "In-memory wrangling of humble-sized data sets",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "mjs": "tsc -d && mv dist/index.js dist/index.mjs",
+    "cjs": "tsc -m commonjs",
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
-    "build": "tsc",
+    "build": "npm run mjs && npm run cjs",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
-    "version": "npm run format && git add -A src"
+    "version": "npm run format && git add -A src",
+    "release": "npm version patch && git push --follow-tags && npm publish"
   },
   "keywords": [
     "big data",
@@ -23,6 +29,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/augustzf/humbledata"
+  },
+  "bugs": {
+    "url": "https://github.com/augustzf/humbledata/issues"
   },
   "devDependencies": {
     "@types/chai": "^4.2.4",
@@ -36,9 +45,6 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.6.4"
   },
-  "files": [
-    "lib/**/*"
-  ],
   "dependencies": {
     "csv-parse": "^4.6.5"
   }

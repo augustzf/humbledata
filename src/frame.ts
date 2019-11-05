@@ -251,6 +251,40 @@ export class Frame {
         return this._slice(-Math.min(rows, this.rows))
     }
 
+    // convert a field to number.
+    // note: null values will not be converted to 0
+    public number(field: string): Frame {
+        return this.transform(row => {
+            const val = row[field]
+            if (val) {
+                row[field] = +val
+            }
+            return row
+        })
+    }
+
+    // convert a field to date.
+    public date(field: string): Frame {
+        return this.transform(row => {
+            const val = row[field]
+            if (val) {
+                row[field] = new Date(val)
+            }
+            return row
+        })
+    }
+
+    // apply transform fn to every row
+    // useful for converting field types
+    public transform(fn: (row: Row) => Row): Frame {
+        const builder = new Builder()
+        for (const row of this.data) {
+            const clone = Object.assign({}, row)
+            builder.addRow(fn(clone))
+        }
+        return builder.build()
+    }
+
     public _slice(start: number, end?: number): Frame {
         return new Builder().addRows(this.data.slice(start, end)).build()
     }
@@ -279,22 +313,6 @@ export class Frame {
             const val = d[field]
             if (val && typeof val === 'number') {
                 fn(val)
-            }
-        }
-    }
-
-    private _iterate(field: string, fn: (row: any) => void) {
-        for (const row of this.data) {
-            fn(row)
-        }
-    }
-
-    // TODO: fix
-    private _eval(field: string, op: (match: Row) => void) {
-        for (const row of this.data) {
-            const match = row[field]
-            if (match) {
-                op(row)
             }
         }
     }
