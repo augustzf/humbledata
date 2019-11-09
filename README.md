@@ -1,8 +1,11 @@
 <h1 align='center'>Humble Data – a data wrangler for humble-sized data sets</h1>
 <p>
-  <img alt='Version' src='https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000' />
+  <img alt='Version' src='https://img.shields.io/badge/version-1.1.0-blue.svg?cacheSeconds=2592000' />
   <a href='#' target='_blank'>
     <img alt='License: ISC' src='https://img.shields.io/badge/License-ISC-yellof.svg' />
+  </a>
+<a href='#' target='_blank'>
+    <img alt='Awesome' src='https://img.shields.io/static/v1?label=awesome&message=yes&color=pink' />
   </a>
 </p>
 
@@ -38,27 +41,52 @@ const data = [
     { name: 'charlie', age: 40, height: 175 }    
 ]
 const frame = new Builder(data).build()
+```
 
-// ...or build from a CSV file
-const frame = await new AsyncBuilder().csv('data.csv', 'utf-8', ',')
+### Debugging
+Frames can be printed to the console with the `print()` function:
+
+```typescript
+frame.print()
+┌─────────┬───────────┬─────┬────────┐
+│ (index) │   name    │ age │ height │
+├─────────┼───────────┼─────┼────────┤
+│    0    │  'alice'  │ 20  │  170   │
+│    1    │   'bob'   │ 30  │  180   │
+│    2    │ 'charlie' │ 40  │  175   │
+└─────────┴───────────┴─────┴────────┘
 ```
 
 ### Aggregate functions
-Aggregate functions return a single value calculated from applying an aggregate function to all rows that have a value for the given field.
+Aggregate functions return a single value calculated from applying an aggregate function to all rows that have a numeric value for the given field.
 
 ```typescript
 const sum = f.sum('age') // sum = 90
 const max = f.max('height') // max = 180
+const min = f.min('height') // min = 170
 const avg = f.avg('age') // avg = 30
 const median = f.median('height') // median = 175
 ```
 
-### Filtering
-The `where` function is used to filter out rows based on a condition. The `where` function returns a new `Frame` object. 
+### Counting functions
+
+The `count` function counts only rows where the given field value is anything else than `undefined`.
 
 ```typescript
-f.where('age', '>=', 30).print()
+const sparse = [
+    { x: 1, y: undefined },
+    { x: 2, y: 30 },
+    { x: 3, y: 30 }    
+]
+const frame = new Builder(sparse).build()
+const count = sparse.count('y') // count = 2 (not 3)
+```
+ 
+The `distinct` function returns the number of distinct (unique), non-`undefined`, values for a given field. 
 
+```typescript
+const distinctX = sparse.distinct('x') // distinctX = 3
+const distinctY = sparse.distinct('y') // distinctY = 1
 ```
 
 ### Grouping
@@ -99,8 +127,21 @@ Total points per player
 └─────────┴────────┴────────────┘
 ```
 
+### Filtering
+The `where` function is used to filter out rows based on a condition. The `where` function returns a new `Frame` object. 
+
+```typescript
+f.where('age', '>=', 30).print()
+┌─────────┬───────────┬─────┬────────┐
+│ (index) │   name    │ age │ height │
+├─────────┼───────────┼─────┼────────┤
+│    0    │   'bob'   │ 30  │  180   │
+│    1    │ 'charlie' │ 40  │  175   │
+└─────────┴───────────┴─────┴────────┘
+```
+
 ### Splitting
-The `split` function splits one `Frame` into several, by grouping on a given field.
+The `split` function splits one `Frame` into several new `Frames`, by grouping on a given field.
 
 ```typescript
 const f = new Builder().addRows(peopleData).build().print()        
