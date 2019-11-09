@@ -14,7 +14,7 @@ export class Builder {
     }
 
     public addRows(rows: Row[]) {
-        this._data = rows
+        this._data = this._data.concat(rows)
         return this
     }
 
