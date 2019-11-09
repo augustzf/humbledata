@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { Builder, AsyncBuilder } from '../src/index'
+import { Builder } from '../src/index'
 const path = require('path');
 
 const peopleData = [
@@ -31,12 +31,6 @@ describe('Builder', () => {
             .addRow({ name: 'bar', 'size': 30 })
             .build()
         expect(f.rows).to.equal(2)
-    })
-
-    it('should build from csv file', async () => {
-        const file = path.join(__dirname, './deniro.csv')
-        const f = await new AsyncBuilder().csv(file)
-        expect(f.rows).to.equal(87)
     })
 })
 
@@ -203,14 +197,5 @@ describe('Transforming', () => {
     it('should convert field to date', () => {
         const f = new Builder().addRows(gameData).build().date('date')
         expect(f.head(1).value('date')).instanceOf(Date)
-    })
-    it('should convert field to number', async () => {
-        const file = path.join(__dirname, './deniro.csv')
-        const builder = new AsyncBuilder()
-        // the frame built from csv will have all fields as strings
-        const f = await builder.csv(file)
-        const transformed = f.number('score').number('year')
-        expect(typeof transformed.head(1).value('year')).to.equal('number')
-        expect(typeof transformed.head(1).value('score')).to.equal('number')
     })
 })
