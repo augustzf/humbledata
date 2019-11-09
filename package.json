@@ -1,6 +1,6 @@
 {
   "name": "humbledata",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "In-memory wrangling of humble-sized data sets",
   "main": "dist/index",
   "types": "dist/index.d.ts",
