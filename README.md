@@ -24,11 +24,15 @@ You use Humble Data to build a `Frame` object from any data source of tidy data;
 
     npm install humbledata
 
+## Usage
+Note that the examples below are in TypeScript.
+
 ### Building the Frame object
 The `Frame` object, once built, is immutable. You build a `Frame` object with a `Builder`. 
 
 ```typescript
 // build by adding one object at a time
+import { Builder } from "humbledata"
 const frame = new Builder()
   .addRow({ name: 'foo', size: 10 })
   .addRow({ name: 'bar', size: 30 })
@@ -79,14 +83,14 @@ const sparse = [
     { x: 3, y: 30 }    
 ]
 const frame = new Builder(sparse).build()
-const count = sparse.count('y') // count = 2 (not 3)
+const count = frame.count('y') // count = 2 (not 3)
 ```
  
 The `distinct` function returns the number of distinct (unique), non-`undefined`, values for a given field. 
 
 ```typescript
-const distinctX = sparse.distinct('x') // distinctX = 3
-const distinctY = sparse.distinct('y') // distinctY = 1
+const distinctX = frame.distinct('x') // distinctX = 3
+const distinctY = frame.distinct('y') // distinctY = 1
 ```
 
 ### Grouping
